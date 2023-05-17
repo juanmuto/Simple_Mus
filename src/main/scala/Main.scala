@@ -1,22 +1,30 @@
+/*
+case class MusValue(value1: Int, value2: Int... )
+case class Card(... value: MusValue)
+
+case class MusValue(ranking:Int, value1: Int, value2: Int... )
 
 
+final case class Mano(cartas: List[Cart])
 
+def repartir(jugadores: Int) : List[Manos]
+
+inicializar
+repartir
+comparar
+*/
+// case class MusResultado(grande: Int, chica: int. par: int, juego: int)
 
 import scala.language.implicitConversions
 import scala.util.Random
 
-
-final case class Rank(value: Int) extends AnyVal
-
+case class Rank(value: Int) extends AnyVal
 object Rank {
   implicit def fromString(s: String): Rank = Rank(s.toInt)
-  // do I need this? why from string?
 }
-
-final case class Card(rank: Rank, suit: Suit) {
-
-  //This will be used for grande, par and chica
-  lazy val cardRanking: Int = (rank.value) match {
+final case class Card(rank: Rank, suit: Suit)
+case class musValue(value: Int) {
+  lazy val Value: Int = value match {
     case (1) => 1
     case (2) => 1
     case (3) => 8
@@ -29,8 +37,7 @@ final case class Card(rank: Rank, suit: Suit) {
     case (12) => 8
     case _ => 0
   }
-  // for juego
-  lazy val cardValue: Int = (rank.value) match {
+  lazy val juego: Int = value match {
     case (1) => 1
     case (2) => 1
     case (3) => 10
@@ -41,12 +48,10 @@ final case class Card(rank: Rank, suit: Suit) {
     case (10) => 10
     case (11) => 10
     case (12) => 10
-
   }
 }
 
 case class Suit(name: String, shortName: String)
-
 object Suit {
   object Espadas extends Suit("Espadas", "e")
 
@@ -58,8 +63,7 @@ object Suit {
 
   val all = List(Espadas, Copas, Oros, Bastos)
 }
-  class Deck {
-
+class Deck {
     val cards = collection.mutable.ListBuffer() ++ Random.shuffle(initDeck)
 
     def dealCard: Option[Card] = cards.isEmpty match {
@@ -75,7 +79,7 @@ object Suit {
         suit <- Suit.all
         rank <- (1 to 7) ++ (10 to 12)
       }
-      yield new Card(Rank(rank), suit)
+      yield new Card(Rank(rank), suit, musValues.juego,)
 
   }
 
@@ -85,5 +89,6 @@ object Main extends App {
   println(deck1.cards)
   val card1 = deck1.dealCard
   println(deck1.cards)
-  println(card1)
+  println(card1.musValues.juego)
+  val value1 = Card.card
 }
