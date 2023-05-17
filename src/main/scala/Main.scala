@@ -22,9 +22,9 @@ case class Rank(value: Int) extends AnyVal
 object Rank {
   implicit def fromString(s: String): Rank = Rank(s.toInt)
 }
-final case class Card(rank: Rank, suit: Suit)
+final case class Card(rank: Rank, suit: Suit, valor: Int, juego: Int)
 case class musValue(value: Int) {
-  lazy val Value: Int = value match {
+  lazy val Valor: Int = value match {
     case (1) => 1
     case (2) => 1
     case (3) => 8
@@ -37,7 +37,7 @@ case class musValue(value: Int) {
     case (12) => 8
     case _ => 0
   }
-  lazy val juego: Int = value match {
+  lazy val Juego: Int = value match {
     case (1) => 1
     case (2) => 1
     case (3) => 10
@@ -79,7 +79,7 @@ class Deck {
         suit <- Suit.all
         rank <- (1 to 7) ++ (10 to 12)
       }
-      yield new Card(Rank(rank), suit, musValues.juego,)
+      yield new Card(Rank(rank), suit, musValue(rank).Juego, musValue(rank).Valor)
 
   }
 
@@ -89,6 +89,5 @@ object Main extends App {
   println(deck1.cards)
   val card1 = deck1.dealCard
   println(deck1.cards)
-  println(card1.musValues.juego)
-  val value1 = Card.card
+
 }
