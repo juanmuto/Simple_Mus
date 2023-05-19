@@ -89,5 +89,5 @@ object Main extends App {
   println(deck1.cards)
   val card1 = deck1.dealCard
   println(deck1.cards)
-
+  println(card1(1))
 }
