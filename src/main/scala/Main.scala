@@ -64,8 +64,10 @@ object Suit {
   val all = List(Espadas, Copas, Oros, Bastos)
 }
 
-final case class Card(rank: Rank, suit: Suit, valor: Int, juego: Int) {
-  implicit val valorOrdering: Ordering[Card] = Ordering.by(_.valor)
+final case class Card(rank: Rank, suit: Suit, valor: Int, juego: Int)
+object Card {
+    implicit val valorOrdering: Ordering[Card] = Ordering.by(_.valor)
+
 }
 class Deck {
     val cards = collection.mutable.ListBuffer() ++ Random.shuffle(initDeck)
@@ -117,32 +119,27 @@ object initialiseGame extends App {
   //TODO assign Mano Property to one player
   //Grande winner:
 
-  def compareCardsByValor(card1: Card, card2: Card): Int = card1.valor.compare(card2.valor)
+  val maxValor = dealtPlayers.map(_.cards.maxBy(_.valor).valor).max
+  val winners = dealtPlayers.filter(_.cards.exists(_.valor == maxValor))
 
-  def findWinnerByHighestValor(players: List[Player]): Option[Player] = {
-    val playersWithHighestValor = players.filter(_.cards.nonEmpty).sortBy(_.cards.maxBy(_.valor))(Ordering[Card].reverse)
-    playersWithHighestValor match {
-      case player :: Nil => Some(player)
-      case player1 :: player2 :: _ =>
-        val comparison = compareCardsByValor(player1.cards.maxBy(_.valor), player2.cards.maxBy(_.valor))
-        if (comparison == 0)
-          None // Draw, no winner
-        else
-          Some(if (comparison > 0) player1 else player2)
-      case _ => None // No player with cards, no winner
+  if (winners.length == 1) {
+    val winner = winners.head
+    println(s"The winner of Grande is ${winner.name} with the highest valor card: ${winner.cards.maxBy(_.valor)}")
+  } else {
+    val remainingCards = dealtPlayers.flatMap(_.cards).filter(_.valor < maxValor)
+    val currentMaxValor = remainingCards.map(_.valor).max
+    val remainingWinners = dealtPlayers.filter(p => p.cards.exists(c => c.valor == currentMaxValor))
+
+    if (remainingWinners.length == 1) {
+      val winner = remainingWinners.head
+      println(s"The winner of Grande is ${winner.name} with the highest valor card: ${winner.cards.maxBy(_.valor)}")
+    } else {
+      val winner = remainingWinners.minBy(_.mano)
+      println(s"The winner of Grande is ${winner.name} with the lowest mano value: ${winner.mano}")
     }
   }
-  val winnerByHighestValor = findWinnerByHighestValor(dealtPlayers)
-  winnerByHighestValor.foreach(winner => println(s"Grande winner: ${winner.name}"))
 }
 
 
 
-/*  val player2Hand = dealtPlayers(1).cards // Accessing the hand of the second player
-  val player2CardValues = player2Hand.map(_.rank.value) // Accessing the values of the cards in the hand of the second player
-  println(player2Hand)
-  println(player2CardValues)*/
 
-/*
-Check map (why map(_.juego)
-  ccc*/
